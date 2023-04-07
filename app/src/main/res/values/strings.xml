@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">QuickCart</string>
+    <string name="fullname">FullName</string>
+    <string name="enter_fullname">Enter FullName</string>
 </resources>
