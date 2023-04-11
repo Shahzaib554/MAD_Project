@@ -17,6 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent i = new Intent(MainActivity.this,login_form.class);
         startActivity(i);
-
+        finish();
     }
 }
