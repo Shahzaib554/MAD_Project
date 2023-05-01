@@ -11,7 +11,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.util.Log;
+import com.facebook.AccessToken;
+import com.facebook.FacebookException;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -21,18 +27,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
+import java.util.Arrays;
 
 public class login_form extends AppCompatActivity {
 
     EditText inputemail, inputpassword;
     TextView forget;
-    Button btnlogin, btnGoogle;
+    Button btnlogin, btnGoogle, btnFacebook;
 
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
 
+//    For Facebook
 
+    CallbackManager callbackManager;
 
     private FirebaseAuth mAuth;
     private ProgressDialog mLoadingBar;
@@ -41,6 +49,46 @@ public class login_form extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_form);
+
+// For Facebook
+
+        btnFacebook = findViewById(R.id.btnFacebook);
+
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken!=null && accessToken.isExpired()==false){
+            startActivity(new Intent(login_form.this,MainActivity.class));
+            finish();
+        }
+
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        startActivity(new Intent(login_form.this,MainActivity.class));
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
+
+        btnFacebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginManager.getInstance().logInWithReadPermissions( login_form.this, Arrays.asList("public_profile"));
+            }
+        });
+
+
 
 // For google Sign-in Option
 
@@ -171,24 +219,70 @@ public class login_form extends AppCompatActivity {
 
 //    Google Signin method
 
-private void signin(){
+    private static final int RC_GOOGLE_SIGN_IN = 123;
+    private static final String TAG = "LoginActivity";
+
+    private void signin() {
         Intent signInIntent = gsc.getSignInIntent();
-        startActivityForResult(signInIntent,1000);
-
-}
-
-@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-    try {
-        task.getResult(ApiException.class);
-        navigateToSecondActivity();
-    } catch (ApiException e) {
-//        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
-
+        startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
     }
-}
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                // Signed in successfully, show authenticated UI.
+                navigateToSecondActivity();
+            } catch (ApiException e) {
+                // The ApiException status code indicates the detailed failure reason.
+                Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            }
+        } else {
+            // Handle Facebook callback
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+//@Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    super.onActivityResult(requestCode, resultCode, data);
+//    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//    try {
+//        task.getResult(ApiException.class);
+//        navigateToSecondActivity();
+//    } catch (ApiException e) {
+////        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//
+//    }
+//}
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        // Handle Google sign-in result
+//        if (requestCode == RC_GOOGLE_SIGN_IN) {
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            try {
+//                GoogleSignInAccount account = task.getResult(ApiException.class);
+//                // Navigate to the next activity
+//                navigateToSecondActivity();
+//            } catch (ApiException e) {
+//                // Handle error
+//                Log.e(TAG, "Google sign-in failed", e);
+//                Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//
+//        // Handle Facebook login result
+//        callbackManager.onActivityResult(requestCode, resultCode, data);
+//    }
+//
+
+
 //        Navigating to main activity method
 
     private void navigateToSecondActivity(){
@@ -198,4 +292,10 @@ private void signin(){
 
 
 }
+
+// FaceBook
+
+
+
+
 }
