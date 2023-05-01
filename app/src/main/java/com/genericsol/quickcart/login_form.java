@@ -2,41 +2,81 @@ package com.genericsol.quickcart;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.ktx.Firebase;
+
 
 public class login_form extends AppCompatActivity {
 
     EditText inputemail, inputpassword;
     TextView forget;
-    Button btnlogin;
+    Button btnlogin, btnGoogle;
+
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
+
+
+
     private FirebaseAuth mAuth;
     private ProgressDialog mLoadingBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_form);
+
+// For google Sign-in Option
+
+        btnGoogle = findViewById(R.id.btnGoogle);
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        gsc= GoogleSignIn.getClient(this,gso);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if(acct!=null){
+            navigateToSecondActivity();
+        }
+
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signin();
+            }
+        });
+
+
+
+
+
+//        Find the Elements with its id's
         forget = findViewById(R.id.forgetPassword);
         inputpassword = findViewById(R.id.inputPassword);
         inputemail = findViewById(R.id.Email);
         btnlogin = findViewById(R.id.btnlogin);
+        btnGoogle = findViewById(R.id.btnGoogle);
+
         mAuth=FirebaseAuth.getInstance();
         mLoadingBar=new ProgressDialog(login_form.this);
+
+
+
 //        This is for signup intent
         TextView btn = findViewById(R.id.SignUp);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +99,9 @@ public class login_form extends AppCompatActivity {
                 forgetPassword();
             }
         });
+
+
+
 
     }
     public void checkCrededentials() {
@@ -95,6 +138,7 @@ public class login_form extends AppCompatActivity {
     }
 
         private void showError(EditText input, String s) {
+        mLoadingBar.dismiss();
         input.setError(s);
         input.requestFocus();
     }
@@ -125,4 +169,33 @@ public class login_form extends AppCompatActivity {
         }
     }
 
+//    Google Signin method
+
+private void signin(){
+        Intent signInIntent = gsc.getSignInIntent();
+        startActivityForResult(signInIntent,1000);
+
+}
+
+@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+    try {
+        task.getResult(ApiException.class);
+        navigateToSecondActivity();
+    } catch (ApiException e) {
+//        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+    }
+}
+//        Navigating to main activity method
+
+    private void navigateToSecondActivity(){
+        finish();
+        Intent intent = new Intent(login_form.this, MainActivity.class);
+        startActivity(intent);
+
+
+}
 }
