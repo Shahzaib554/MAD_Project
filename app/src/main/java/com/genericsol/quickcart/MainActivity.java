@@ -7,7 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.MenuItem;
-import android.view.View;
+import java.util.ArrayList;
+
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,6 +17,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
+//dashboad imported files
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,6 +43,16 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
 
+//For Products
+    ArrayList<Product> productList = new ArrayList<>();
+    Product product1 = new Product(R.drawable.apple_product, "Apple Product", "$1000");
+    Product product2 = new Product(R.drawable.laptop, "Laptop", "$800");
+    Product product3 = new Product(R.drawable.smart_watch, "Smart Watch", "$600");
+    Product product4 = new Product(R.drawable.dsler, "Dslr", "$800");
+    Product product5 = new Product(R.drawable.speakers, "Speakers", "$700");
+    Product product6 = new Product(R.drawable.headphones, "HeadPhone", "$500");
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -51,6 +66,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
+//        Product displaying
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+
+        productList.add(product1);
+        productList.add(product2);
+        productList.add(product3);
+        productList.add(product4);
+        productList.add(product5);
+        productList.add(product6);
+
+
+        ProductAdapter adapter = new ProductAdapter(productList);
+        recyclerView.setAdapter(adapter);
+
 //        Toolbar
 
         Toolbar toolbar = findViewById(R.id.Toolbar);
@@ -98,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        btn
 
-//        btnlogout = findViewById(R.id.btnlogout);
+//      btnlogout = findViewById(R.id.btnlogout);
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -109,19 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 
-//
-//        btnlogout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                LoginManager.getInstance().logOut();
-//                mAuth.signOut();
-//                googleSignOut();
-//                finish();
-//                Intent intent = new Intent(MainActivity.this, login_form.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-//            }
-//        });
+
    }
 void googleSignOut(){
     gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
