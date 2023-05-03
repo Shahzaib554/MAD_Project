@@ -120,6 +120,7 @@ public class login_form extends AppCompatActivity {
         btnlogin = findViewById(R.id.btnlogin);
         btnGoogle = findViewById(R.id.btnGoogle);
 
+//        For firebase
         mAuth=FirebaseAuth.getInstance();
         mLoadingBar=new ProgressDialog(login_form.this);
 
