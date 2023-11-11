@@ -3,4 +3,9 @@
     <string name="fullname">FullName</string>
     <string name="enter_fullname">Enter FullName</string>
     <string name="qc_content">Quick Cart Icon</string>
+    <string name="facebook_app_id">255275537051199</string>
+    <string name="fb_login_protocol_scheme">fb255275537051199</string>
+    <string name="facebook_client_token">56789</string>
+    <string name="open">Open Navigation Drawer</string>
+    <string name="close">Close Navigation Drawer</string>
 </resources>
