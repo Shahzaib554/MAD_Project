@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.genericsol.quickcart.adapter.CategoryAdapter;
+import com.genericsol.quickcart.apiClient.ApiClient;
 import com.genericsol.quickcart.model.CategoryApi;
 import com.genericsol.quickcart.model.CategoryModel;
 import retrofit2.Call;
@@ -30,12 +31,9 @@ public class Category extends AppCompatActivity implements CategoryAdapter.OnIte
         RecyclerView recyclerView = findViewById(R.id.categoryRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.10.10:3000")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        // Use the ApiClient class to get the Retrofit instance
+        CategoryApi categoryApi = ApiClient.getClient().create(CategoryApi.class);
 
-        CategoryApi categoryApi = retrofit.create(CategoryApi.class);
 
         Call<List<CategoryModel>> call = categoryApi.getCategories();
         call.enqueue(new Callback<List<CategoryModel>>() {

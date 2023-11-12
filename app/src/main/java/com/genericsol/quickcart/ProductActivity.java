@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.genericsol.quickcart.adapter.ProductAdapter;
+import com.genericsol.quickcart.apiClient.ApiClient;
 import com.genericsol.quickcart.model.ProductModel;
 import com.genericsol.quickcart.model.ProductApi;
 import retrofit2.Call;
@@ -35,12 +36,7 @@ public class ProductActivity extends AppCompatActivity implements ProductAdapter
         // Retrieve the category ID passed from the Category activity
         String categoryId = getIntent().getStringExtra("category_id");
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.10.10:3000")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ProductApi productApi = retrofit.create(ProductApi.class);
+        ProductApi productApi = ApiClient.getClient().create(ProductApi.class);
 
         Call<List<ProductModel>> call = productApi.getProductsByCategory(categoryId);
         call.enqueue(new Callback<List<ProductModel>>() {
