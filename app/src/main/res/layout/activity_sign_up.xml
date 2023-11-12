@@ -10,16 +10,16 @@
 
 
     <EditText
-        android:id="@+id/inputConfirmPassword"
+        android:id="@+id/inputPhoneNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/input_bg"
-        android:drawableLeft="@drawable/ic_security"
+        android:drawableLeft="@drawable/baseline_phone_24"
         android:textColor="@color/black"
         android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Re-Enter Password"
+        android:hint="Enter Phone Number"
         android:inputType="textPassword"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
@@ -111,15 +111,15 @@
         android:id="@+id/btnRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="44dp"
         android:background="@drawable/btn_bg"
         android:backgroundTint="@color/black"
-        android:textColor="@color/white"
         android:text="Register"
-        app:layout_constraintEnd_toEndOf="@+id/inputConfirmPassword"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/inputPhoneNumber"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/inputConfirmPassword"
-        app:layout_constraintTop_toBottomOf="@+id/inputConfirmPassword" />
+        app:layout_constraintStart_toStartOf="@+id/inputPhoneNumber"
+        app:layout_constraintTop_toBottomOf="@+id/inputPhoneNumber" />
 
     <TextView
         android:id="@+id/alreadyHaveAccount"
@@ -132,4 +132,6 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="@+id/btnRegister"
         app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
