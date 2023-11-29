@@ -63,6 +63,7 @@ public class CartActivity extends AppCompatActivity {
                 // Start Category activity
                 Intent intent = new Intent(CartActivity.this, Category.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

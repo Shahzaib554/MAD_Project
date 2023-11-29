@@ -47,6 +47,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                 // Optionally, navigate to the CartDataActivity
                 startActivity(new Intent(ProductDetailActivity.this, CartActivity.class));
+                finish();
             }
         });
 
