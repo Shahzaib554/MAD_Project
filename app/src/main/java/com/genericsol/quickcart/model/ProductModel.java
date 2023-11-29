@@ -31,7 +31,16 @@ public class ProductModel implements Serializable {
     @SerializedName("__v")
     private int v;
 
-    // Constructors, getters, and setters
+    private int quantity;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+// Constructors, getters, and setters
 
     // Constructors
 
