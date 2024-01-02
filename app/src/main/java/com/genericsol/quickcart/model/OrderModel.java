@@ -2,6 +2,8 @@ package com.genericsol.quickcart.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 import java.util.List;
 
 public class OrderModel {
@@ -27,6 +29,9 @@ public class OrderModel {
     @SerializedName("products")
     private List<ProductModel> products;
 
+    @SerializedName("createdAt")
+    private Date createdAt;
+
     public static class ProductModel {
         @SerializedName("name")
         private String name;
@@ -36,6 +41,8 @@ public class OrderModel {
 
         @SerializedName("price")
         private double price;
+
+
 
         public ProductModel() {
         }
@@ -132,4 +139,9 @@ public class OrderModel {
     public void setProducts(List<ProductModel> products) {
         this.products = products;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
 }
