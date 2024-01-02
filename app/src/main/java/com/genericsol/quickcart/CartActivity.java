@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.genericsol.quickcart.model.CartManager;
 import com.genericsol.quickcart.model.ProductModel;
 
+import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -49,9 +50,16 @@ public class CartActivity extends AppCompatActivity {
         checkOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start CheckOutActivity
-//                Intent intent = new Intent(CartDataActivity.this, CheckOutActivity.class);
-//                startActivity(intent);
+
+                // Collect data to be sent to CheckOutActivity
+                List<ProductModel> cartItems = CartManager.getInstance().getCartItems();
+                double totalPrice = calculateTotalPrice(cartItems);
+
+//                 Start CheckOutActivity
+                Intent intent = new Intent(CartActivity.this, CheckOutActivity.class);
+                intent.putExtra("cartItems", (Serializable) cartItems);
+                intent.putExtra("totalPrice", totalPrice);
+                startActivity(intent);
             }
         });
 
@@ -161,4 +169,14 @@ public class CartActivity extends AppCompatActivity {
         NumberFormat numberFormat = NumberFormat.getInstance();
         return numberFormat.format(price) + " Rs";
     }
+
+    // Helper method to calculate total price
+    private double calculateTotalPrice(List<ProductModel> cartItems) {
+        double totalPrice = 0;
+        for (ProductModel item : cartItems) {
+            totalPrice += item.getPrice() * item.getQuantity();
+        }
+        return totalPrice;
+    }
+
 }

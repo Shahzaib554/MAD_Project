@@ -2,6 +2,7 @@ package com.genericsol.quickcart;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private TextView tvSignUp;
-    private UserApi userService;
+    private List<UserModel> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,79 +38,89 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnlogin);
         tvSignUp = findViewById(R.id.SignUp);
 
-        // Set onClickListener for the login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Call the method to initiate login process
                 performLogin();
             }
         });
 
-        // Set onClickListener for the sign-up text
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start the sign-up activity or perform any other relevant action
-                // For example:
-                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                 startActivity(intent);
-                 finish();
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
+
+        // Fetch users when the activity is created
+        fetchUsers();
     }
 
     private void performLogin() {
         String enteredEmail = etEmail.getText().toString().trim();
         String enteredPassword = etPassword.getText().toString().trim();
 
-        // Check if email and password are not empty
         if (enteredEmail.isEmpty() || enteredPassword.isEmpty()) {
             Toast.makeText(LoginActivity.this, "Please enter both email and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Create API service
+        // Check user credentials using the fetched data
+        checkUserCredentials(enteredEmail, enteredPassword);
+    }
+
+    private void fetchUsers() {
         UserApi userService = ApiClient.getClient().create(UserApi.class);
 
-        // Make API request to get users
         Call<List<UserModel>> call = userService.getUsers();
         call.enqueue(new Callback<List<UserModel>>() {
             @Override
             public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
                 if (response.isSuccessful()) {
-                    List<UserModel> users = response.body();
-
-                    // Check user credentials
-                    if (checkUserCredentials(enteredEmail, enteredPassword, users)) {
-                        // Navigate to CategoryActivity
-                        Intent intent = new Intent(LoginActivity.this, Category.class);
-                        startActivity(intent);
-                        finish(); // Finish the current activity if needed
-                    } else {
-                        // Display an error message or handle incorrect credentials
-                        Toast.makeText(LoginActivity.this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
-                    }
+                    users = response.body();
                 } else {
-                    // Handle unsuccessful response
                     Toast.makeText(LoginActivity.this, "Failed to get user data", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<UserModel>> call, Throwable t) {
-                // Handle failure
                 Toast.makeText(LoginActivity.this, "Network error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private boolean checkUserCredentials(String enteredEmail, String enteredPassword, List<UserModel> users) {
+    private void checkUserCredentials(String enteredEmail, String enteredPassword) {
+        if (users == null) {
+            Toast.makeText(LoginActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         for (UserModel user : users) {
             if (user.getEmail().equals(enteredEmail) && user.getPasswordHash().equals(enteredPassword)) {
-                return true; // Credentials are correct
+                if (enteredEmail.equals("admin@gmail.com")) {
+                    navigateToMainActivity();
+                } else {
+                    navigateToCategory();
+                }
+                return;
             }
         }
-        return false; // Credentials are incorrect
+
+        Toast.makeText(LoginActivity.this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
+        startActivity(intent);
+        finish(); // Finish the current activity if needed
+    }
+
+    private void navigateToCategory() {
+        Intent intent = new Intent(LoginActivity.this, Category.class);
+        startActivity(intent);
+        finish(); // Finish the current activity if needed
     }
 }
