@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextCategoryName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Category Name"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/editTextImageLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Image Link"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_below="@id/editTextCategoryName"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/buttonUpdateCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Category"
+        android:layout_below="@id/editTextImageLink"
+        android:layout_marginTop="16dp"/>
+
+</RelativeLayout>
